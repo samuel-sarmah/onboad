@@ -9,6 +9,7 @@ import { X, Calendar, User, Flag } from "lucide-react";
 
 interface Task {
   id: string;
+  column_id: string;
   title: string;
   description: string | null;
   priority: "low" | "medium" | "high" | "urgent";
@@ -132,7 +133,7 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId }: KanbanB
                 setNewTaskColumn(column.id);
                 setIsCreating(true);
               }}
-              onTaskClick={setSelectedTask}
+              onTaskClick={(task) => setSelectedTask(task)}
             />
           ))}
         </div>

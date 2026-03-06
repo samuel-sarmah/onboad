@@ -13,7 +13,11 @@ interface TeamMember {
     email: string;
     name: string | null;
     avatar_url: string | null;
-  };
+  } | {
+    email: string;
+    name: string | null;
+    avatar_url: string | null;
+  }[];
 }
 
 interface TeamPageProps {
@@ -35,6 +39,14 @@ const rolePermissions = {
   member: "Create/edit assigned tasks",
   viewer: "Read-only access",
 };
+
+function getUserData(member: TeamMember) {
+  const users = member.users;
+  if (Array.isArray(users)) {
+    return users[0] || { email: "", name: null, avatar_url: null };
+  }
+  return users;
+}
 
 export function TeamPageClient({ workspaceId, initialMembers, currentUserRole }: TeamPageProps) {
   const supabase = createClient();
@@ -143,40 +155,43 @@ export function TeamPageClient({ workspaceId, initialMembers, currentUserRole }:
       <Card>
         <h3 className="font-semibold mb-4">Team Members ({members.length})</h3>
         <div className="divide-y divide-border">
-          {members.map((member) => (
-            <div
-              key={member.user_id}
-              className="flex items-center justify-between py-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-primary">
-                    {(member.users.name || member.users.email)[0].toUpperCase()}
-                  </span>
+          {members.map((member) => {
+            const userData = getUserData(member);
+            return (
+              <div
+                key={member.user_id}
+                className="flex items-center justify-between py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary">
+                      {(userData.name || userData.email)[0].toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">
+                      {userData.name || "No name"}
+                    </p>
+                    <p className="text-xs text-gray-500">{userData.email}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-sm">
-                    {member.users.name || "No name"}
-                  </p>
-                  <p className="text-xs text-gray-500">{member.users.email}</p>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-3">
-                <Badge variant={roleColors[member.role]}>
-                  {member.role}
-                </Badge>
-                {canManageMembers && member.role !== "admin" && (
-                  <button
-                    onClick={() => handleRemoveMember(member.user_id)}
-                    className="p-1 hover:bg-secondary rounded"
-                  >
-                    <Trash2 className="w-4 h-4 text-gray-400" />
-                  </button>
-                )}
+                <div className="flex items-center gap-3">
+                  <Badge variant={roleColors[member.role]}>
+                    {member.role}
+                  </Badge>
+                  {canManageMembers && member.role !== "admin" && (
+                    <button
+                      onClick={() => handleRemoveMember(member.user_id)}
+                      className="p-1 hover:bg-secondary rounded"
+                    >
+                      <Trash2 className="w-4 h-4 text-gray-400" />
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Card>
 

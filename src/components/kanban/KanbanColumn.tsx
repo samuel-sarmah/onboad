@@ -1,12 +1,13 @@
 "use client";
 
-import { useDroppable } from "@hello-pangea/dnd";
+import { Droppable } from "@hello-pangea/dnd";
 import { TaskCard } from "./TaskCard";
 import { Button } from "@/components/ui";
 import { Plus } from "lucide-react";
 
 interface Task {
   id: string;
+  column_id: string;
   title: string;
   description: string | null;
   priority: "low" | "medium" | "high" | "urgent";
@@ -31,10 +32,6 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanColumnProps) {
-  const { setNodeRef, isOver } = useDroppable({
-    id: column.id,
-  });
-
   const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
 
   return (
@@ -62,26 +59,31 @@ export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanCo
         </button>
       </div>
 
-      <div
-        ref={setNodeRef}
-        className={`space-y-2 min-h-[200px] p-1 rounded transition-colors ${
-          isOver ? "bg-primary/5" : ""
-        }`}
-      >
-        {sortedTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onClick={() => onTaskClick?.(task)}
-          />
-        ))}
-
-        {tasks.length === 0 && (
-          <div className="text-center py-8 text-xs text-gray-400">
-            No tasks yet
+      <Droppable droppableId={column.id}>
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={`space-y-2 min-h-[200px] p-1 rounded transition-colors ${
+              snapshot.isDraggingOver ? "bg-primary/5" : ""
+            }`}
+          >
+            {sortedTasks.map((task, index) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onClick={() => onTaskClick?.(task)}
+              />
+            ))}
+            {provided.placeholder}
+            {tasks.length === 0 && (
+              <div className="text-center py-8 text-xs text-gray-400">
+                No tasks yet
+              </div>
+            )}
           </div>
         )}
-      </div>
+      </Droppable>
     </div>
   );
 }

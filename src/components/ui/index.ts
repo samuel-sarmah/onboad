@@ -8,3 +8,5 @@ export type { InputProps, TextareaProps } from "./Input";
 
 export { Badge } from "./Badge";
 export type { BadgeProps, BadgeVariant } from "./Badge";
+
+export { Checkbox } from "./Checkbox";

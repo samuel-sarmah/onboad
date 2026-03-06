@@ -5,6 +5,7 @@ import { Calendar, MessageSquare, User } from "lucide-react";
 
 interface Task {
   id: string;
+  column_id: string;
   title: string;
   description: string | null;
   priority: "low" | "medium" | "high" | "urgent";
