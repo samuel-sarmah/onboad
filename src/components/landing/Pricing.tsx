@@ -73,7 +73,7 @@ export function Pricing() {
               padding="lg"
             >
               {plan.popular && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white">
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-blue">
                   Most Popular
                 </Badge>
               )}
