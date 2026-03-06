@@ -29,7 +29,9 @@ export function Header() {
             Sign in
           </Link>
           <Button size="sm">
+            <Link href="/login" >
             Get Started
+          </Link>            
           </Button>
         </div>
       </div>
