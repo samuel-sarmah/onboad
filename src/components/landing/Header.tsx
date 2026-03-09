@@ -13,26 +13,26 @@ export function Header() {
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="#features" className="text-sm text-gray-600 hover:text-primary transition-colors">
+          <Link href="/features" className="text-sm text-gray-600 hover:text-primary transition-colors">
             Features
           </Link>
-          <Link href="#pricing" className="text-sm text-gray-600 hover:text-primary transition-colors">
+          <Link href="/#pricing" className="text-sm text-gray-600 hover:text-primary transition-colors">
             Pricing
           </Link>
-          <Link href="#about" className="text-sm text-gray-600 hover:text-primary transition-colors">
+          <Link href="/#about" className="text-sm text-gray-600 hover:text-primary transition-colors">
             About
           </Link>
         </nav>
         
         <div className="flex items-center gap-3">
-          <Link href="/login" className="text-sm text-gray-600 hover:text-primary transition-colors hidden sm:block">
-            Sign in
+          <Link href="/signup" className="text-sm text-gray-600 hover:text-primary transition-colors hidden sm:block">
+            Sign up
           </Link>
-          <Button size="sm">
-            <Link href="/login" >
-            Get Started
-          </Link>            
-          </Button>
+          <Link href="/signup">
+            <Button size="sm">
+              Get Started
+            </Button>
+          </Link>
         </div>
       </div>
     </header>
