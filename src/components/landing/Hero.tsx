@@ -1,9 +1,10 @@
+import Link from "next/link";
 import { Button } from "@/components/ui";
 import { ArrowRight } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="pt-32 pb-20 px-6">
+    <section className="pt-10 pb-6 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-border rounded-full bg-secondary">
           <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
@@ -22,10 +23,12 @@ export function Hero() {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="group">
-            Start Free Trial
-            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link href="/signup">
+            <Button size="lg" className="group">
+              Start Free Trial
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
           <Button variant="outline" size="lg">
             Watch Demo
           </Button>
