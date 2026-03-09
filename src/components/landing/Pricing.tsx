@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button, Card, Badge } from "@/components/ui";
 import { Check } from "lucide-react";
 
@@ -54,9 +55,9 @@ const plans = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="py-20 px-6">
+    <section id="pricing" className="py-6 px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-5">
           <h2 className="text-3xl font-bold text-primary mb-4">
             Simple, transparent pricing
           </h2>
@@ -96,9 +97,11 @@ export function Pricing() {
                 ))}
               </ul>
               
-              <Button variant={plan.variant} className="w-full">
-                {plan.cta}
-              </Button>
+              <Link href="/signup" className="block">
+                <Button variant={plan.variant} className="w-full">
+                  {plan.cta}
+                </Button>
+              </Link>
             </Card>
           ))}
         </div>
