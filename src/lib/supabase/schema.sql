@@ -241,6 +241,21 @@ CREATE TRIGGER create_workspace_after_signup
   FOR EACH ROW EXECUTE FUNCTION public.create_default_workspace();
 
 -- Realtime subscriptions setup
+-- Create the publication if it doesn't exist, then add tables
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+    CREATE PUBLICATION supabase_realtime;
+  END IF;
+END
+$$;
+
+-- Add tables to realtime publication
 ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.tasks;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.comments;
+
+-- Enable realtime for tasks (required for RLS with realtime)
+ALTER TABLE public.tasks REPLICA IDENTITY FULL;
+ALTER TABLE public.comments REPLICA IDENTITY FULL;
+ALTER TABLE public.notifications REPLICA IDENTITY FULL;
