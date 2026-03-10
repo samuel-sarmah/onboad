@@ -1,4 +1,4 @@
-import { Header, Hero, DemoKanban, Pricing, CTA, Footer } from "@/components/landing";
+import { Header, Hero, DemoKanban, CalendarDemo, Pricing, CTA, Footer } from "@/components/landing";
 
 export default function Home() {
   return (
@@ -6,6 +6,7 @@ export default function Home() {
       <Header />
       <Hero />
       <DemoKanban />
+      <CalendarDemo />
       <Pricing />
       <CTA />
       <Footer />
