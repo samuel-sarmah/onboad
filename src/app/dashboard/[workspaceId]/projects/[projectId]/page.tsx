@@ -72,35 +72,36 @@ export default async function ProjectBoardPage({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="border-b border-border px-6 py-4">
+      <div className="border-b border-border px-3 py-2 md:px-6 md:py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <Link href={`/dashboard/${workspaceId}`}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-primary">{project.name}</h1>
+              <h1 className="text-lg md:text-xl font-bold text-primary">{project.name}</h1>
               {project.description && (
-                <p className="text-sm text-gray-500">{project.description}</p>
+                <p className="text-xs md:text-sm text-gray-500">{project.description}</p>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
             <Button variant="outline" size="sm">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
+              <Settings className="w-4 h-4 mr-1 md:mr-2" />
+              <span className="hidden md:inline">Settings</span>
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto p-2 md:p-6">
         <KanbanBoard
           initialColumns={defaultColumns}
           initialTasks={defaultTasks}
           projectId={projectId}
+          workspaceId={workspaceId}
         />
       </div>
     </div>

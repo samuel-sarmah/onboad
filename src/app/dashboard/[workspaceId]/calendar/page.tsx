@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { CalendarView } from "@/components/calendar/CalendarView";
+import { CalendarViewWrapper } from "@/components/calendar/CalendarViewWrapper";
 import { Button } from "@/components/ui";
 import { ArrowLeft } from "lucide-react";
 
@@ -44,22 +44,22 @@ export default async function CalendarPage({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="border-b border-border px-6 py-4">
-        <div className="flex items-center gap-4">
+      <div className="border-b border-border px-3 py-2 md:px-6 md:py-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <Link href={`/dashboard/${workspaceId}`}>
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-primary">Calendar</h1>
-            <p className="text-sm text-gray-500">View tasks by deadline</p>
+            <h1 className="text-lg md:text-xl font-bold text-primary">Calendar</h1>
+            <p className="text-xs md:text-sm text-gray-500 hidden md:block">View tasks by deadline</p>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-6">
-        <CalendarView events={events} />
+      <div className="flex-1 overflow-auto p-2 md:p-6">
+        <CalendarViewWrapper workspaceId={workspaceId} initialEvents={events} />
       </div>
     </div>
   );

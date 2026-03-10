@@ -35,27 +35,27 @@ export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanCo
   const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
 
   return (
-    <div className="flex-shrink-0 w-72">
-      <div className="flex items-center justify-between mb-3 px-1">
-        <div className="flex items-center gap-2">
+    <div className="flex-shrink-0 w-64 md:w-72">
+      <div className="flex items-center justify-between mb-1 md:mb-3 px-1">
+        <div className="flex items-center gap-1 md:gap-2">
           {column.color && (
             <div 
-              className="w-3 h-3 rounded-full" 
+              className="w-2 md:w-3 h-2 md:h-3 rounded-full" 
               style={{ backgroundColor: column.color }}
             />
           )}
-          <h3 className="font-medium text-sm text-primary">
+          <h3 className="font-medium text-xs md:text-sm text-primary">
             {column.name}
           </h3>
-          <span className="text-xs text-gray-500 bg-secondary px-1.5 py-0.5 rounded">
+          <span className="text-xs text-gray-500 bg-secondary px-1 py-0.5 rounded">
             {tasks.length}
           </span>
         </div>
         <button 
           onClick={onAddTask}
-          className="p-1 hover:bg-secondary rounded transition-colors"
+          className="p-0.5 md:p-1 hover:bg-secondary rounded transition-colors"
         >
-          <Plus className="w-4 h-4 text-gray-400" />
+          <Plus className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
         </button>
       </div>
 
@@ -64,7 +64,7 @@ export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanCo
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`space-y-2 min-h-[200px] p-1 rounded transition-colors ${
+            className={`space-y-1 md:space-y-2 min-h-[60px] md:min-h-[200px] p-0.5 md:p-1 rounded transition-colors ${
               snapshot.isDraggingOver ? "bg-primary/5" : ""
             }`}
           >
@@ -77,7 +77,7 @@ export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanCo
             ))}
             {provided.placeholder}
             {tasks.length === 0 && (
-              <div className="text-center py-8 text-xs text-gray-400">
+              <div className="text-center py-2 md:py-8 text-xs text-gray-400">
                 No tasks yet
               </div>
             )}

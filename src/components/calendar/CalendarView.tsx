@@ -70,16 +70,16 @@ export function CalendarView({ events }: CalendarViewProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold">
+      <div className="flex items-center justify-between mb-2 md:mb-6">
+        <h2 className="text-base md:text-xl font-semibold">
           {MONTHS[month]} {year}
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <Button variant="outline" size="sm" onClick={prevMonth}>
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3 md:w-4 h-3 md:h-4" />
           </Button>
           <Button variant="outline" size="sm" onClick={nextMonth}>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3 md:w-4 h-3 md:h-4" />
           </Button>
         </div>
       </div>
@@ -88,7 +88,7 @@ export function CalendarView({ events }: CalendarViewProps) {
         {DAYS.map((day) => (
           <div
             key={day}
-            className="bg-secondary/30 p-2 text-center text-sm font-medium text-gray-600"
+            className="bg-secondary/30 p-1 md:p-2 text-center text-xs md:text-sm font-medium text-gray-600"
           >
             {day}
           </div>
@@ -106,31 +106,36 @@ export function CalendarView({ events }: CalendarViewProps) {
           return (
             <div
               key={index}
-              className={`bg-white min-h-[100px] p-1 ${
+              className={`bg-white min-h-[60px] md:min-h-[100px] p-0.5 md:p-1 ${
                 day ? "cursor-pointer hover:bg-secondary/20" : "bg-secondary/30"
               } ${isSelected ? "ring-2 ring-primary ring-inset" : ""}`}
               onClick={() => day && setSelectedDate(new Date(year, month, day))}
             >
               {day && (
                 <>
-                  <div className={`text-sm mb-1 ${isToday ? "font-bold text-primary" : "text-gray-600"}`}>
+                  <div className={`text-xs md:text-sm mb-0.5 md:mb-1 ${isToday ? "font-bold text-primary" : "text-gray-600"}`}>
                     {day}
                     {isToday && (
-                      <span className="ml-1 w-1.5 h-1.5 bg-primary rounded-full inline-block" />
+                      <span className="ml-0.5 md:ml-1 w-1 md:w-1.5 h-1 md:h-1.5 bg-primary rounded-full inline-block" />
                     )}
                   </div>
-                  <div className="space-y-1">
-                    {dayEvents.slice(0, 3).map((event) => (
+                  <div className="space-y-0.5 md:space-y-1">
+                    {dayEvents.slice(0, 2).map((event) => (
                       <div
                         key={event.id}
-                        className={`text-xs p-1 rounded border ${priorityColors[event.priority]} truncate`}
+                        className={`text-[10px] md:text-xs p-0.5 md:p-1 rounded border ${priorityColors[event.priority]} truncate`}
                       >
                         {event.title}
                       </div>
                     ))}
-                    {dayEvents.length > 3 && (
-                      <div className="text-xs text-gray-500 text-center">
+                    {dayEvents.length > 2 && (
+                      <div className="text-[10px] md:text-xs text-gray-500 text-center hidden md:block">
                         +{dayEvents.length - 3} more
+                      </div>
+                    )}
+                    {dayEvents.length > 2 && (
+                      <div className="md:hidden text-[10px] text-gray-500 text-center">
+                        +{dayEvents.length - 2}
                       </div>
                     )}
                   </div>

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { KanbanColumn } from "./KanbanColumn";
 import { createClient } from "@/lib/supabase/client";
 import { Button, Input, Textarea, Badge } from "@/components/ui";
 import { X, Calendar, User, Flag } from "lucide-react";
+import { useRealtimeTasks } from "@/hooks/useRealtimeTasks";
 
 interface Task {
   id: string;
@@ -30,10 +31,12 @@ interface KanbanBoardProps {
   initialColumns: Column[];
   initialTasks: Task[];
   projectId: string;
+  workspaceId?: string;
 }
 
-export function KanbanBoard({ initialColumns, initialTasks, projectId }: KanbanBoardProps) {
+export function KanbanBoard({ initialColumns, initialTasks, projectId, workspaceId }: KanbanBoardProps) {
   const supabase = createClient();
+  const { tasks: realtimeTasks } = useRealtimeTasks({ workspaceId, projectId });
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [tasks, setTasks] = useState<Record<string, Task[]>>(() => {
     const grouped: Record<string, Task[]> = {};
@@ -44,10 +47,24 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId }: KanbanB
     });
     return grouped;
   });
+
+  useEffect(() => {
+    if (realtimeTasks.length > 0) {
+      const grouped: Record<string, Task[]> = {};
+      columns.forEach((col) => {
+        grouped[col.id] = realtimeTasks
+          .filter((t) => t.column_id === col.id)
+          .sort((a, b) => a.position - b.position);
+      });
+      setTasks(grouped);
+    }
+  }, [realtimeTasks, columns]);
   const [isCreating, setIsCreating] = useState(false);
   const [newTaskColumn, setNewTaskColumn] = useState<string | null>(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskDueDate, setNewTaskDueDate] = useState("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [editingDueDate, setEditingDueDate] = useState(false);
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -100,6 +117,7 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId }: KanbanB
       .insert({
         column_id: newTaskColumn,
         title: newTaskTitle,
+        due_date: newTaskDueDate ? new Date(newTaskDueDate).toISOString() : null,
         created_by: (await supabase.auth.getUser()).data.user?.id,
         position: (tasks[newTaskColumn]?.length || 0),
       })
@@ -114,6 +132,7 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId }: KanbanB
     }
 
     setNewTaskTitle("");
+    setNewTaskDueDate("");
     setNewTaskColumn(null);
     setIsCreating(false);
   };
@@ -123,7 +142,7 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId }: KanbanB
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-4">
           {sortedColumns.map((column) => (
             <KanbanColumn
               key={column.id}
@@ -154,6 +173,17 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId }: KanbanB
               placeholder="Task title"
               autoFocus
             />
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Due Date (optional)
+              </label>
+              <Input
+                type="date"
+                value={newTaskDueDate}
+                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                placeholder="Select due date"
+              />
+            </div>
             <div className="flex gap-2 mt-4">
               <Button variant="outline" onClick={() => setIsCreating(false)}>
                 Cancel
