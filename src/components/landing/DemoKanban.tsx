@@ -43,23 +43,38 @@ export function DemoKanban() {
     const sourceColumn = source.droppableId;
     const destColumn = destination.droppableId;
 
+    const sortByDate = (taskList: DemoTask[]) => {
+      return [...taskList].sort((a, b) => {
+        if (a.due_date && b.due_date) {
+          return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+        }
+        if (a.due_date) return -1;
+        if (b.due_date) return 1;
+        return a.position - b.position;
+      });
+    };
+
     const sourceTasks = [...(tasks[sourceColumn] || [])];
     const [movedTask] = sourceTasks.splice(source.index, 1);
 
     if (sourceColumn === destColumn) {
       sourceTasks.splice(destination.index, 0, movedTask);
+      const sortedSource = sortByDate(sourceTasks);
       setTasks({
         ...tasks,
-        [sourceColumn]: sourceTasks.map((t, i) => ({ ...t, position: i + 1 })),
+        [sourceColumn]: sortedSource.map((t, i) => ({ ...t, position: i + 1 })),
       });
     } else {
       const destTasks = [...(tasks[destColumn] || [])];
       destTasks.splice(destination.index, 0, movedTask);
       
+      const sortedSource = sortByDate(sourceTasks);
+      const sortedDest = sortByDate(destTasks);
+      
       const newTasks = {
         ...tasks,
-        [sourceColumn]: sourceTasks.map((t, i) => ({ ...t, position: i + 1 })),
-        [destColumn]: destTasks.map((t, i) => ({ ...t, position: i + 1 })),
+        [sourceColumn]: sortedSource.map((t, i) => ({ ...t, position: i + 1 })),
+        [destColumn]: sortedDest.map((t, i) => ({ ...t, position: i + 1 })),
       };
       setTasks(newTasks);
     }
@@ -81,7 +96,20 @@ export function DemoKanban() {
       position: (tasks[newTaskColumn]?.length || 0) + 1,
     };
 
-    addTask(newTask);
+    const currentTasks = tasks[newTaskColumn] || [];
+    const updatedTasks = [...currentTasks, newTask].sort((a, b) => {
+      if (a.due_date && b.due_date) {
+        return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+      }
+      if (a.due_date) return -1;
+      if (b.due_date) return 1;
+      return a.position - b.position;
+    });
+
+    setTasks({
+      ...tasks,
+      [newTaskColumn]: updatedTasks.map((t, i) => ({ ...t, position: i + 1 })),
+    });
 
     setNewTaskForm({ title: "", description: "", priority: "medium", due_date: "" });
     setShowNewTaskForm(false);
@@ -91,6 +119,16 @@ export function DemoKanban() {
     if (!selectedTask || !editForm.title?.trim()) return;
 
     const columnId = editForm.column_id || selectedTask.column_id;
+    const sortByDateFn = (taskList: DemoTask[]) => {
+      return [...taskList].sort((a, b) => {
+        if (a.due_date && b.due_date) {
+          return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+        }
+        if (a.due_date) return -1;
+        if (b.due_date) return 1;
+        return a.position - b.position;
+      });
+    };
     
     if (editForm.column_id && editForm.column_id !== selectedTask.column_id) {
       const sourceTasks = tasks[selectedTask.column_id]?.filter(
@@ -101,20 +139,29 @@ export function DemoKanban() {
         ...selectedTask,
         ...editForm,
         column_id: columnId,
-        date: editForm.due_date || selectedTask.due_date || undefined,
+        due_date: editForm.due_date || null,
+        date: editForm.due_date || undefined,
       };
       
       const destTasks = [...(tasks[columnId] || []), updatedTask];
       
       setTasks({
         ...tasks,
-        [selectedTask.column_id]: sourceTasks.map((t, i) => ({ ...t, position: i + 1 })),
-        [columnId]: destTasks.map((t, i) => ({ ...t, position: i + 1 })),
+        [selectedTask.column_id]: sortByDateFn(sourceTasks).map((t, i) => ({ ...t, position: i + 1 })),
+        [columnId]: sortByDateFn(destTasks).map((t, i) => ({ ...t, position: i + 1 })),
       });
     } else {
-      updateTask(selectedTask.id, {
-        ...editForm,
-        date: editForm.due_date || selectedTask.due_date || undefined,
+      const columnTasks = tasks[columnId]?.map((t) =>
+        t.id === selectedTask.id
+          ? { ...t, ...editForm, due_date: editForm.due_date || null, date: editForm.due_date || undefined }
+          : t
+      ) || [];
+      
+      const sortedColumnTasks = sortByDateFn(columnTasks);
+      
+      setTasks({
+        ...tasks,
+        [columnId]: sortedColumnTasks.map((t, i) => ({ ...t, position: i + 1 })),
       });
     }
 

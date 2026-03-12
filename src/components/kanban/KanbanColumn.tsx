@@ -33,7 +33,14 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ column, tasks, onAddTask, onTaskClick, lightText }: KanbanColumnProps) {
-  const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (a.due_date && b.due_date) {
+      return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+    }
+    if (a.due_date) return -1;
+    if (b.due_date) return 1;
+    return a.position - b.position;
+  });
   const textColor = lightText ? "text-white" : "text-primary";
   const subTextColor = lightText ? "text-white/70" : "text-gray-500";
   const countBg = lightText ? "bg-white/20" : "bg-secondary";
