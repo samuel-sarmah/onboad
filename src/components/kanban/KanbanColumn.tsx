@@ -1,6 +1,6 @@
 "use client";
 
-import { Droppable } from "@hello-pangea/dnd";
+import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { TaskCard } from "./TaskCard";
 import { Button } from "@/components/ui";
 import { Plus } from "lucide-react";
@@ -80,11 +80,22 @@ export function KanbanColumn({ column, tasks, onAddTask, onTaskClick, lightText 
             }`}
           >
             {sortedTasks.map((task, index) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onClick={() => onTaskClick?.(task)}
-              />
+              <Draggable key={task.id} draggableId={task.id} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={{ ...provided.draggableProps.style }}
+                    className={snapshot.isDragging ? "opacity-50" : ""}
+                  >
+                    <TaskCard
+                      task={task}
+                      onClick={() => onTaskClick?.(task)}
+                    />
+                  </div>
+                )}
+              </Draggable>
             ))}
             {provided.placeholder}
             {tasks.length === 0 && (
