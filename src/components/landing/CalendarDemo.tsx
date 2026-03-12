@@ -1,64 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Input, Textarea, Badge } from "@/components/ui";
-import { X, ChevronLeft, ChevronRight, Plus, Trash2, Calendar as CalendarIcon, AlertCircle, Edit2 } from "lucide-react";
-
-interface CalendarTask {
-  id: string;
-  title: string;
-  description?: string;
-  date: string;
-  priority: "low" | "medium" | "high" | "urgent";
-  assignee?: string;
-}
-
-const DEMO_TASKS_CALENDAR: CalendarTask[] = [
-  {
-    id: "cal-task-1",
-    title: "Team standup",
-    date: "2026-03-10",
-    priority: "medium",
-    assignee: "Team",
-  },
-  {
-    id: "cal-task-2",
-    title: "Product review meeting",
-    date: "2026-03-12",
-    priority: "high",
-    assignee: "Leadership",
-  },
-  {
-    id: "cal-task-3",
-    title: "Client presentation",
-    description: "Q1 results presentation",
-    date: "2026-03-15",
-    priority: "urgent",
-    assignee: "Sarah",
-  },
-  {
-    id: "cal-task-4",
-    title: "Design review",
-    date: "2026-03-17",
-    priority: "high",
-    assignee: "Design Team",
-  },
-  {
-    id: "cal-task-5",
-    title: "Sprint planning",
-    description: "Plan tasks for next sprint",
-    date: "2026-03-19",
-    priority: "high",
-    assignee: "Engineering",
-  },
-  {
-    id: "cal-task-6",
-    title: "Budget review",
-    date: "2026-03-21",
-    priority: "medium",
-    assignee: "Finance",
-  },
-];
+import { useLandingDemo, DemoTask } from "./LandingDemoContext";
+import { X, ChevronLeft, ChevronRight, Plus, Trash2, Calendar as CalendarIcon, Edit2 } from "lucide-react";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
@@ -83,16 +28,16 @@ const priorityDotColors = {
 const TEAM_MEMBERS = ["Sarah", "John", "Maya", "Alex", "Engineering", "Design Team", "Team", "Leadership", "Finance"];
 
 export function CalendarDemo() {
+  const { tasks, addTask, updateTask, deleteTask } = useLandingDemo();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [tasks, setTasks] = useState<CalendarTask[]>(DEMO_TASKS_CALENDAR);
+  const [allTasks, setAllTasks] = useState<DemoTask[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<CalendarTask | null>(null);
-  const [editingTask, setEditingTask] = useState<CalendarTask | null>(null);
-  const [editForm, setEditForm] = useState<Partial<CalendarTask>>({});
-  const [editingFromForm, setEditingFromForm] = useState<CalendarTask | null>(null);
+  const [selectedTask, setSelectedTask] = useState<DemoTask | null>(null);
+  const [editingTask, setEditingTask] = useState<DemoTask | null>(null);
+  const [editForm, setEditForm] = useState<Partial<DemoTask>>({});
+  const [editingFromForm, setEditingFromForm] = useState<DemoTask | null>(null);
 
-  // Permanent form for desktop with today's date pre-filled
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -100,6 +45,18 @@ export function CalendarDemo() {
     assignee: "Team",
     date: new Date(),
   });
+
+  useEffect(() => {
+    const tasksWithDates: DemoTask[] = [];
+    Object.values(tasks).forEach((columnTasks) => {
+      columnTasks.forEach((task) => {
+        if (task.due_date) {
+          tasksWithDates.push(task);
+        }
+      });
+    });
+    setAllTasks(tasksWithDates);
+  }, [tasks]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -118,47 +75,47 @@ export function CalendarDemo() {
   };
 
   const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
   };
 
   const getTasksForDate = (day: number) => {
     const dateStr = formatDate(new Date(year, month, day));
-    return tasks.filter(task => task.date === dateStr);
+    return allTasks.filter((task) => task.due_date === dateStr);
   };
 
   const handleAddTask = () => {
     if (!formData.title.trim()) return;
-    
-    // Validate that the selected date is in the future
+
     if (!isFutureDate(formData.date)) {
       return;
     }
 
     if (editingFromForm) {
-      // Update existing task
-      const updatedTask: CalendarTask = {
-        ...editingFromForm,
+      updateTask(editingFromForm.id, {
         title: formData.title,
-        description: formData.description || undefined,
+        description: formData.description || null,
+        due_date: formatDate(formData.date),
         date: formatDate(formData.date),
+        assigned_to: formData.assignee,
         priority: formData.priority,
-        assignee: formData.assignee,
-      };
-      setTasks(tasks.map(t => t.id === editingFromForm.id ? updatedTask : t));
+      });
     } else {
-      // Create new task
-      const newTask: CalendarTask = {
+      const newTask: DemoTask = {
         id: `cal-task-${Date.now()}`,
+        column_id: "todo",
         title: formData.title,
-        description: formData.description || undefined,
-        date: formatDate(formData.date),
+        description: formData.description || null,
         priority: formData.priority,
-        assignee: formData.assignee,
+        due_date: formatDate(formData.date),
+        date: formatDate(formData.date),
+        assigned_to: formData.assignee,
+        created_by: "demo-user",
+        position: 1,
       };
-      setTasks([...tasks, newTask]);
+      addTask(newTask);
     }
 
     resetForm();
@@ -172,12 +129,19 @@ export function CalendarDemo() {
   };
 
   const handleDeleteTask = (taskId: string) => {
-    setTasks(tasks.filter(t => t.id !== taskId));
+    deleteTask(taskId);
     setSelectedTask(null);
   };
 
-  const handleUpdateTask = (updatedTask: CalendarTask) => {
-    setTasks(tasks.map(t => t.id === updatedTask.id ? updatedTask : t));
+  const handleUpdateTask = (updatedTask: DemoTask) => {
+    updateTask(updatedTask.id, {
+      title: updatedTask.title,
+      description: updatedTask.description,
+      due_date: updatedTask.due_date,
+      date: updatedTask.due_date || undefined,
+      priority: updatedTask.priority,
+      assigned_to: updatedTask.assigned_to,
+    });
     setSelectedTask(updatedTask);
     setEditingTask(null);
   };
@@ -192,29 +156,26 @@ export function CalendarDemo() {
 
   const handleDateClick = (day: number) => {
     const newDate = new Date(year, month, day);
-    
-    // Only allow future dates (today or later)
+
     if (!isFutureDate(newDate)) {
       return;
     }
-    
+
     const dateStr = formatDate(newDate);
-    const existingTaskOnDate = tasks.find(task => task.date === dateStr);
-    
+    const existingTaskOnDate = allTasks.find((task) => task.due_date === dateStr);
+
     setSelectedDate(newDate);
-    
+
     if (existingTaskOnDate) {
-      // If there's a task on this date, open it for editing
       setEditingFromForm(existingTaskOnDate);
       setFormData({
         title: existingTaskOnDate.title,
         description: existingTaskOnDate.description || "",
         priority: existingTaskOnDate.priority as any,
-        assignee: existingTaskOnDate.assignee || "Team",
+        assignee: existingTaskOnDate.assigned_to || "Team",
         date: newDate,
       });
     } else {
-      // Otherwise, show the form for creating a new task
       setEditingFromForm(null);
       setFormData({
         title: "",
@@ -380,8 +341,8 @@ export function CalendarDemo() {
                     type="date"
                     value={formatDate(formData.date)}
                     onChange={(e) => {
-                      const [year, month, day] = e.target.value.split('-').map(Number);
-                      setFormData({ ...formData, date: new Date(year, month - 1, day) });
+                      const [y, m, d] = e.target.value.split("-").map(Number);
+                      setFormData({ ...formData, date: new Date(y, m - 1, d) });
                     }}
                     className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -468,7 +429,7 @@ export function CalendarDemo() {
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="font-semibold text-lg flex items-center gap-2">
                     <CalendarIcon className="w-5 h-5 text-primary" />
-                    {selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    {selectedDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </h4>
                   <button
                     onClick={() => {
@@ -579,13 +540,12 @@ export function CalendarDemo() {
                         <div
                           key={task.id}
                           onClick={() => {
-                            // Load task into form for editing
                             setFormData({
                               title: task.title,
                               description: task.description || "",
                               priority: task.priority as any,
-                              assignee: task.assignee || "Team",
-                              date: new Date(task.date),
+                              assignee: task.assigned_to || "Team",
+                              date: new Date(task.due_date!),
                             });
                             setEditingFromForm(task);
                             setShowForm(true);
@@ -597,9 +557,9 @@ export function CalendarDemo() {
                               <p className="text-sm font-medium text-gray-900 truncate">
                                 {task.title}
                               </p>
-                              {task.assignee && (
+                              {task.assigned_to && (
                                 <p className="text-xs text-gray-600 mt-1">
-                                  {task.assignee}
+                                  {task.assigned_to}
                                 </p>
                               )}
                             </div>
@@ -654,7 +614,7 @@ export function CalendarDemo() {
                     <label className="text-xs font-semibold text-gray-500 uppercase">
                       Assigned to
                     </label>
-                    <p className="text-sm text-gray-700 mt-1">{selectedTask.assignee || "Unassigned"}</p>
+                    <p className="text-sm text-gray-700 mt-1">{selectedTask.assigned_to || "Unassigned"}</p>
                   </div>
 
                   <div>
@@ -662,10 +622,10 @@ export function CalendarDemo() {
                       Date
                     </label>
                     <p className="text-sm text-gray-700 mt-1">
-                      {new Date(selectedTask.date).toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
+                      {selectedTask.due_date && new Date(selectedTask.due_date).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
                       })}
                     </p>
                   </div>
@@ -760,8 +720,8 @@ export function CalendarDemo() {
                       Assign to
                     </label>
                     <select
-                      value={editForm.assignee || "Team"}
-                      onChange={(e) => setEditForm({ ...editForm, assignee: e.target.value })}
+                      value={editForm.assigned_to || "Team"}
+                      onChange={(e) => setEditForm({ ...editForm, assigned_to: e.target.value })}
                       className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       {TEAM_MEMBERS.map((member) => (
@@ -779,10 +739,14 @@ export function CalendarDemo() {
                           handleUpdateTask({
                             id: editingTask.id,
                             title: editForm.title,
-                            description: editForm.description,
-                            date: editingTask.date,
+                            description: editForm.description || null,
+                            due_date: editingTask.due_date,
+                            date: editingTask.due_date || undefined,
                             priority: editForm.priority || "medium",
-                            assignee: editForm.assignee,
+                            assigned_to: editForm.assigned_to || null,
+                            column_id: editingTask.column_id,
+                            position: editingTask.position,
+                            created_by: editingTask.created_by,
                           });
                         }
                       }}
