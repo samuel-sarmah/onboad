@@ -11,9 +11,6 @@ export function LandingDemo() {
       <div className="relative">
         <BrandBackground />
         <DemoKanban />
-      </div>
-      <div className="relative">
-        <BrandBackground />
         <CalendarDemo />
       </div>
     </LandingDemoProvider>
