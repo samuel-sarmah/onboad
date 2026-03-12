@@ -29,10 +29,14 @@ interface KanbanColumnProps {
   tasks: Task[];
   onAddTask?: () => void;
   onTaskClick?: (task: Task) => void;
+  lightText?: boolean;
 }
 
-export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanColumnProps) {
+export function KanbanColumn({ column, tasks, onAddTask, onTaskClick, lightText }: KanbanColumnProps) {
   const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
+  const textColor = lightText ? "text-white" : "text-primary";
+  const subTextColor = lightText ? "text-white/70" : "text-gray-500";
+  const countBg = lightText ? "bg-white/20" : "bg-secondary";
 
   return (
     <div className="flex-shrink-0 w-64 md:w-72">
@@ -44,18 +48,18 @@ export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanCo
               style={{ backgroundColor: column.color }}
             />
           )}
-          <h3 className="font-medium text-xs md:text-sm text-primary">
+          <h3 className={`font-medium text-xs md:text-sm ${textColor}`}>
             {column.name}
           </h3>
-          <span className="text-xs text-gray-500 bg-secondary px-1 py-0.5 rounded">
+          <span className={`text-xs ${subTextColor} ${countBg} px-1 py-0.5 rounded`}>
             {tasks.length}
           </span>
         </div>
         <button 
           onClick={onAddTask}
-          className="p-0.5 md:p-1 hover:bg-secondary rounded transition-colors"
+          className={`p-0.5 md:p-1 hover:bg-white/10 rounded transition-colors ${lightText ? "text-white" : "hover:bg-secondary"}`}
         >
-          <Plus className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
+          <Plus className="w-3 md:w-4 h-3 md:h-4" />
         </button>
       </div>
 
@@ -77,7 +81,7 @@ export function KanbanColumn({ column, tasks, onAddTask, onTaskClick }: KanbanCo
             ))}
             {provided.placeholder}
             {tasks.length === 0 && (
-              <div className="text-center py-2 md:py-8 text-xs text-gray-400">
+              <div className={`text-center py-2 md:py-8 text-xs ${lightText ? "text-white/60" : "text-gray-400"}`}>
                 No tasks yet
               </div>
             )}
