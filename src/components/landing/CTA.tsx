@@ -1,29 +1,27 @@
 import Link from "next/link";
 import { Button } from "@/components/ui";
-import { ArrowRight } from "lucide-react";
 
 export function CTA() {
   return (
-    <section className="py-6 px-6 bg-primary text-white">
+    <section className="py-8 md:py-16 px-3 md:px-4 bg-[#f4f5f7]">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-3">
-          Ready to streamline your workflow?
+        <h2 className="text-2xl md:text-3xl font-bold text-[#172b4d] mb-3 md:mb-4">
+          Ready to organize your team's work?
         </h2>
-          <p className="text-gray-400 mb-3">
-          Join thousands of teams who ship faster with Onboard.
+          <p className="text-sm md:text-base text-[#5e6c84] mb-6 md:mb-8">
+          Join thousands of teams already using Onboard to ship faster.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto justify-center">
           <Link href="/signup">
-            <Button variant="secondary" size="lg" className="whitespace-nowrap">
-              Get Started
-              <ArrowRight className="w-4 h-4 ml-2" />
+            <Button size="lg" className="bg-[#0079bf] hover:bg-[#026aa7] text-white whitespace-nowrap w-full sm:w-auto">
+              Get Started Free
             </Button>
           </Link>
         </div>
         
-        <p className="mt-4 text-xs text-gray-500">
-          14-day free trial · No credit card required
+        <p className="mt-6 text-xs text-[#5e6c84]">
+          No credit card required · Free forever for small teams
         </p>
       </div>
     </section>
