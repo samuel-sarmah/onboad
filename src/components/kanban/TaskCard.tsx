@@ -52,7 +52,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
   return (
     <div
       onClick={onClick}
-      className={`${config.bg} ${config.border} border-t-4 rounded-md p-3 cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5 shadow-sm font-[family-name:var(--font-patrick)]`}
+      className={`${config.bg} ${config.border} border-t-4 rounded-md p-3 cursor-pointer hover:shadow-md transition-all shadow-sm font-[family-name:var(--font-patrick)]`}
     >
       <div className="flex items-center justify-between gap-2 mb-2">
         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${config.badge}`}>
@@ -65,7 +65,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       </h4>
 
       {task.description && (
-        <p className="text-sm text-gray-600 line-clamp-2 mb-2 italic">
+        <p className="text-sm text-gray-600 line-clamp-2 mb-2 font-[family-name:var(--font-caveat)]">
           {task.description}
         </p>
       )}

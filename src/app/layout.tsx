@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Patrick_Hand } from "next/font/google";
+import { Inter, Patrick_Hand, Caveat } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -11,6 +11,12 @@ const inter = Inter({
 const patrickHand = Patrick_Hand({
   weight: "400",
   variable: "--font-patrick",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
   subsets: ["latin"],
   display: "swap",
 });
@@ -27,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${patrickHand.variable}`}>
+      <body className={`${inter.variable} ${patrickHand.variable} ${caveat.variable}`}>
         {children}
       </body>
     </html>
