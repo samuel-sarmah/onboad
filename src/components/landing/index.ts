@@ -6,3 +6,4 @@ export { CalendarDemo } from "./CalendarDemo";
 export { Pricing } from "./Pricing";
 export { CTA } from "./CTA";
 export { Footer } from "./Footer";
+export { LandingDemo } from "./LandingDemo";

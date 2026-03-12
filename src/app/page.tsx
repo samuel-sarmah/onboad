@@ -1,12 +1,11 @@
-import { Header, Hero, DemoKanban, CalendarDemo, Pricing, CTA, Footer } from "@/components/landing";
+import { Header, Hero, LandingDemo, Pricing, CTA, Footer } from "@/components/landing";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       <Header />
       <Hero />
-      <DemoKanban />
-      <CalendarDemo />
+      <LandingDemo />
       <Pricing />
       <CTA />
       <Footer />
