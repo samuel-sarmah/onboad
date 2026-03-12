@@ -7,6 +7,8 @@ import {
   Bell, 
   CheckSquare,
   MessageSquare,
+  Zap,
+  Clock,
   Shield
 } from "lucide-react";
 
@@ -14,69 +16,59 @@ const features = [
   {
     icon: LayoutGrid,
     title: "Kanban Boards",
-    description: "Visualize your workflow with customizable boards and drag-drop task management."
+    description: "Visualize your workflow with customizable boards. Drag and drop tasks between columns to track progress at a glance."
   },
   {
     icon: Calendar,
     title: "Calendar View",
-    description: "Track deadlines and schedules with an integrated calendar view."
+    description: "See all your deadlines in one place. Sync due dates and plan your team's schedule with an integrated calendar."
   },
   {
     icon: Users,
     title: "Team Collaboration",
-    description: "Assign tasks, share updates, and keep everyone on the same page."
+    description: "Work together seamlessly. Assign tasks, share updates, and keep everyone aligned on project goals."
   },
   {
     icon: BarChart3,
     title: "Progress Reports",
-    description: "Track team velocity and project progress with detailed analytics."
-  },
-  {
-    icon: CheckSquare,
-    title: "Subtasks",
-    description: "Break down complex tasks into manageable subtasks."
-  },
-  {
-    icon: MessageSquare,
-    title: "Comments & Mentions",
-    description: "Discuss tasks in real-time with @mentions and thread comments."
+    description: "Track team velocity and project progress with built-in analytics. Make data-driven decisions."
   },
   {
     icon: Bell,
-    title: "Notifications",
-    description: "Stay informed with instant notifications for updates and deadlines."
+    title: "Real-time Notifications",
+    description: "Stay informed with instant notifications for task updates, comments, and approaching deadlines."
   },
   {
     icon: Shield,
     title: "Roles & Permissions",
-    description: "Control access with customizable roles: Admin, Manager, Member, or Viewer."
+    description: "Control access with customizable roles. Choose from Admin, Manager, Member, or Viewer permissions."
   }
 ];
 
 export function Features() {
   return (
-    <section id="features" className="py-6 px-6 bg-secondary/30">
+    <section id="features" className="py-6 md:py-16 px-3 md:px-4 bg-[#f4f5f7]">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-5">
-          <h2 className="text-3xl font-bold text-primary mb-4">
-            Everything you need to ship
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#172b4d] mb-4">
+            Everything your team needs to ship faster
           </h2>
-          <p className="text-gray-600 max-w-md mx-auto">
-            Powerful features designed for small teams who want to move fast.
+          <p className="text-[#5e6c84] max-w-lg mx-auto">
+            Powerful features designed for small teams who want to get things done.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
-            <Card key={index} className="hover:border-border-dark transition-colors">
-              <div className="w-10 h-10 bg-primary/5 rounded flex items-center justify-center mb-4">
-                <feature.icon className="w-5 h-5 text-primary" />
+            <div key={index} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-[#dfe1e6]">
+              <div className="w-12 h-12 bg-[#0079bf] rounded-lg flex items-center justify-center mb-4">
+                <feature.icon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-primary mb-2">{feature.title}</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
+              <h3 className="font-semibold text-[#172b4d] mb-2 text-lg">{feature.title}</h3>
+              <p className="text-sm text-[#5e6c84] leading-relaxed">
                 {feature.description}
               </p>
-            </Card>
+            </div>
           ))}
         </div>
       </div>
