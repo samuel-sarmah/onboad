@@ -262,20 +262,19 @@ export function DemoKanban() {
   };
 
   return (
-    <section className="py-6 px-6 bg-secondary/30">
+    <section className="py-6 md:py-10 px-3 md:px-4 bg-[#f4f5f7]">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-4">
-          <h2 className="text-3xl font-bold text-primary mb-4">
-            Try Kanban Boards
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#172b4d] mb-3 md:mb-4">
+            Kanban boards that just work
           </h2>
-          <p className="text-gray-600 max-w-md mx-auto">
-            Drag and drop tasks between columns. Click tasks to edit, add new ones, or delete them.
-            See how easy project management can be.
+          <p className="text-[#5e6c84] max-w-lg mx-auto text-sm md:text-base">
+            Visualize your workflow with customizable columns. Drag and drop tasks to update status instantly.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg border border-border p-6">
-          <div className="mb-4 flex justify-end">
+        <div className="bg-[#0079bf] rounded-xl p-3 md:p-6 shadow-lg">
+          <div className="mb-3 md:mb-4 flex justify-end">
             <Button
               size="sm"
               onClick={() => {
@@ -300,6 +299,7 @@ export function DemoKanban() {
                     column={column}
                     tasks={tasks[column.id] || []}
                     onTaskClick={setSelectedTask}
+                    lightText={true}
                     onAddTask={() => {
                       setNewTaskColumn(column.id);
                       setNewTaskFromColumn(true);
