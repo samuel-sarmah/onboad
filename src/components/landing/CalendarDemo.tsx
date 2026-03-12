@@ -236,21 +236,20 @@ export function CalendarDemo() {
   }
 
   return (
-    <section className="w-full py-5 px-1 bg-gradient-to-b from-slate-50 to-white flex items-center justify-center min-h-screen">
-      <div className="w-full flex items-center justify-center">
-        <div className="w-full max-w-6xl mx-auto px-1">
-          <div className="mb-12 text-center">
-            <h2 className="text-4xl font-bold mb-4">
-              Never miss a deadline
-            </h2>
-            <p className="text-xl text-gray-600">
-              Visualize your team's schedule with an interactive calendar. Assign tasks to specific dates and keep everyone on track.
-            </p>
-          </div>
+    <section className="w-full py-6 md:py-10 px-3 md:px-4 bg-[#f4f5f7]">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-6 md:mb-10 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#172b4d] mb-3 md:mb-4">
+            Never miss a deadline
+          </h2>
+          <p className="text-sm md:text-base text-[#5e6c84]">
+            See all your tasks in a calendar view. Plan ahead and keep your team on track.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Calendar */}
-            <div className="lg:col-span-2 bg-white rounded-lg border border-border shadow-lg p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          {/* Calendar */}
+          <div className="lg:col-span-2 bg-white rounded-lg border border-[#dfe1e6] shadow-sm p-3 md:p-6">
             {/* Month Navigation */}
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-semibold">
@@ -807,7 +806,6 @@ export function CalendarDemo() {
               </div>
             )}
           </div>
-        </div>
         </div>
       </div>
     </section>
