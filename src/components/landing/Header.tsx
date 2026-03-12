@@ -1,7 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui";
+import { Menu, X } from "lucide-react";
 
 export function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-border">
       <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -35,8 +41,52 @@ export function Header() {
               Sign up
             </Button>
           </Link>
+          
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 text-[#5e6c84] hover:text-[#172b4d]"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-border">
+          <nav className="flex flex-col p-4 gap-2">
+            <Link 
+              href="/features" 
+              className="px-3 py-2 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Features
+            </Link>
+            <Link 
+              href="/#pricing" 
+              className="px-3 py-2 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pricing
+            </Link>
+            <Link 
+              href="/#about" 
+              className="px-3 py-2 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link 
+              href="/login" 
+              className="px-3 py-2 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Log in
+            </Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
