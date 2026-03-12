@@ -1,7 +1,6 @@
 "use client";
 
-import { Badge } from "@/components/ui";
-import { Calendar, MessageSquare, User } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 interface Task {
   id: string;
@@ -20,56 +19,66 @@ interface TaskCardProps {
   onClick?: () => void;
 }
 
-const priorityColors = {
-  low: "default",
-  medium: "info",
-  high: "warning",
-  urgent: "error",
-} as const;
+const priorityConfig = {
+  low: {
+    bg: "bg-yellow-50",
+    border: "border-yellow-200",
+    badge: "bg-yellow-400 text-yellow-900",
+    accent: "text-yellow-600",
+  },
+  medium: {
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    badge: "bg-blue-400 text-blue-900",
+    accent: "text-blue-600",
+  },
+  high: {
+    bg: "bg-orange-50",
+    border: "border-orange-200",
+    badge: "bg-orange-400 text-orange-900",
+    accent: "text-orange-600",
+  },
+  urgent: {
+    bg: "bg-pink-50",
+    border: "border-pink-200",
+    badge: "bg-pink-400 text-pink-900",
+    accent: "text-pink-600",
+  },
+};
 
 export function TaskCard({ task, onClick }: TaskCardProps) {
-  const completedSubtasks = 0;
-  const totalSubtasks = 0;
+  const config = priorityConfig[task.priority];
 
   return (
     <div
       onClick={onClick}
-      className="bg-white border border-border rounded p-3 cursor-pointer hover:border-border-dark transition-colors shadow-sm"
+      className={`${config.bg} ${config.border} border-t-4 rounded-md p-3 cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5 shadow-sm font-[family-name:var(--font-patrick)]`}
     >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <h4 className="text-sm font-medium text-primary line-clamp-2">
-          {task.title}
-        </h4>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${config.badge}`}>
+          {task.priority.toUpperCase()}
+        </span>
       </div>
 
+      <h4 className="text-base font-medium text-gray-800 leading-tight mb-1">
+        {task.title}
+      </h4>
+
       {task.description && (
-        <p className="text-xs text-gray-500 line-clamp-2 mb-3">
+        <p className="text-sm text-gray-600 line-clamp-2 mb-2 italic">
           {task.description}
         </p>
       )}
 
-      <div className="flex items-center gap-2 flex-wrap">
-        <Badge variant={priorityColors[task.priority]}>
-          {task.priority}
-        </Badge>
-
-        {task.due_date && (
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <Calendar className="w-3 h-3" />
-            {new Date(task.due_date).toLocaleDateString()}
-          </div>
-        )}
-
-        {task.assigned_to && (
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <User className="w-3 h-3" />
-          </div>
-        )}
-
-        <div className="flex items-center gap-1 text-xs text-gray-500 ml-auto">
-          <MessageSquare className="w-3 h-3" />
+      {task.due_date && (
+        <div className={`flex items-center gap-1 text-xs ${config.accent} font-medium`}>
+          <Calendar className="w-3 h-3" />
+          {new Date(task.due_date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })}
         </div>
-      </div>
+      )}
     </div>
   );
 }
