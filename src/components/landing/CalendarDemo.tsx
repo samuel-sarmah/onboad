@@ -253,7 +253,7 @@ export function CalendarDemo() {
                   <div
                     key={index}
                     onClick={() => day && handleDateClick(day)}
-                    className={`aspect-square p-2 rounded border-2 flex flex-col overflow-hidden transition-all ${
+                    className={`min-h-[3.5rem] md:aspect-square p-1 md:p-2 rounded border-2 flex flex-col overflow-hidden transition-all ${
                       day ? (
                         isFutureDate(new Date(year, month, day))
                           ? "bg-white hover:bg-blue-50 cursor-pointer"
@@ -274,23 +274,47 @@ export function CalendarDemo() {
                           )}
                         </div>
                         <div className="space-y-0.5 overflow-y-auto flex-1 min-h-0">
-                          {dayTasks.slice(0, 2).map((task) => (
-                            <div
-                              key={task.id}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedTask(task);
-                              }}
-                              className={`text-xs p-1 rounded border ${priorityColors[task.priority].bg} ${priorityColors[task.priority].border} border-l-2 truncate cursor-pointer hover:shadow-md transition-shadow flex items-start gap-1`}
-                            >
-                              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-0.5 ${priorityDotColors[task.priority]}`} />
-                              <span className="truncate flex-1">{task.title}</span>
-                            </div>
-                          ))}
-                          {dayTasks.length > 2 && (
-                            <div className="text-xs text-gray-600 px-1 font-medium">
-                              +{dayTasks.length - 2} more
-                            </div>
+                          {dayTasks.length > 0 && (
+                            <>
+                              <div className="hidden md:block">
+                                {dayTasks.slice(0, 2).map((task) => (
+                                  <div
+                                    key={task.id}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedTask(task);
+                                    }}
+                                    className={`text-xs p-1 rounded border ${priorityColors[task.priority].bg} ${priorityColors[task.priority].border} border-l-2 truncate cursor-pointer hover:shadow-md transition-shadow flex items-start gap-1`}
+                                  >
+                                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-0.5 ${priorityDotColors[task.priority]}`} />
+                                    <span className="truncate flex-1">{task.title}</span>
+                                  </div>
+                                ))}
+                                {dayTasks.length > 2 && (
+                                  <div className="text-xs text-gray-600 px-1 font-medium">
+                                    +{dayTasks.length - 2} more
+                                  </div>
+                                )}
+                              </div>
+                              <div className="md:hidden flex flex-wrap gap-1">
+                                {dayTasks.slice(0, 3).map((task) => (
+                                  <span
+                                    key={task.id}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedTask(task);
+                                    }}
+                                    className={`inline-flex w-2 h-2 rounded-full ${priorityDotColors[task.priority]} cursor-pointer`}
+                                    title={task.title}
+                                  />
+                                ))}
+                                {dayTasks.length > 3 && (
+                                  <span className="text-[10px] text-gray-500 font-medium">
+                                    +{dayTasks.length - 3}
+                                  </span>
+                                )}
+                              </div>
+                            </>
                           )}
                         </div>
                       </>
