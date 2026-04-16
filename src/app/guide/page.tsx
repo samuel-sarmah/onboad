@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Button, Input, Card } from "@/components/ui";
 import {
@@ -321,9 +321,32 @@ const tableOfContents = [
 export default function GuidePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState("gettingStarted");
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: "-20% 0px -60% 0px",
+        threshold: 0,
+      }
+    );
+
+    Object.values(sectionRefs.current).forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    const element = sectionRefs.current[sectionId] || document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
       setActiveSection(sectionId);
@@ -452,6 +475,7 @@ export default function GuidePage() {
                   <section
                     key={section.id}
                     id={section.id}
+                    ref={(el) => { sectionRefs.current[section.id] = el; }}
                     className="scroll-mt-20"
                   >
                     <div className="flex items-center gap-3 mb-6">
