@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui";
+import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
 import { 
   LayoutGrid, 
   Calendar, 
@@ -21,12 +22,14 @@ import {
 interface SidebarProps {
   workspaces: { id: string; name: string }[];
   currentWorkspace?: { id: string; name: string };
+  user: { id: string; name?: string | null; email?: string | null };
 }
 
-export function Sidebar({ workspaces, currentWorkspace }: SidebarProps) {
+export function Sidebar({ workspaces, currentWorkspace, user }: SidebarProps) {
   const pathname = usePathname();
   const supabase = createClient();
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
+  const { unreadCount } = useRealtimeNotifications(user.id, { showToasts: false });
 
   const navigation = [
     { name: "Board", href: `/dashboard/${currentWorkspace?.id}`, icon: LayoutGrid },
@@ -112,14 +115,27 @@ export function Sidebar({ workspaces, currentWorkspace }: SidebarProps) {
       <div className="p-4 border-t border-border">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-primary">U</span>
+            <span className="text-sm font-medium text-primary">
+              {(user.name || user.email || "U").charAt(0).toUpperCase()}
+            </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">User</p>
-            <p className="text-xs text-gray-500 truncate">user@example.com</p>
+            <p className="text-sm font-medium truncate">{user.name || "User"}</p>
+            <p className="text-xs text-gray-500 truncate">{user.email || ""}</p>
           </div>
-          <button className="p-1 hover:bg-secondary rounded">
+          <button
+            className="relative p-1 hover:bg-secondary rounded"
+            aria-label={`Unread notifications: ${unreadCount}`}
+            title={`Unread notifications: ${unreadCount}`}
+          >
             <Bell className="w-4 h-4 text-gray-400" />
+            <span
+              className={`absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-white text-[10px] leading-4 text-center font-semibold ${
+                unreadCount > 0 ? "bg-red-500" : "bg-gray-400"
+              }`}
+            >
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
           </button>
         </div>
         <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleSignOut}>

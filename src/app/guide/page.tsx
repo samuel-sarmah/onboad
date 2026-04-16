@@ -310,27 +310,35 @@ const guideSections: Record<string, GuideSection> = {
 };
 
 const tableOfContents = [
-  { id: "gettingStarted", title: "Getting Started" },
-  { id: "dashboard", title: "Dashboard & Kanban Board" },
-  { id: "calendar", title: "Calendar View" },
-  { id: "team", title: "Team Management" },
-  { id: "reports", title: "Reports & Analytics" },
-  { id: "settings", title: "Settings" },
+  { key: "gettingStarted", id: "getting-started", title: "Getting Started" },
+  { key: "dashboard", id: "dashboard", title: "Dashboard & Kanban Board" },
+  { key: "calendar", id: "calendar", title: "Calendar View" },
+  { key: "team", id: "team", title: "Team Management" },
+  { key: "reports", id: "reports", title: "Reports & Analytics" },
+  { key: "settings", id: "settings", title: "Settings" },
 ];
 
 export default function GuidePage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeSection, setActiveSection] = useState("gettingStarted");
+  const [activeSection, setActiveSection] = useState("getting-started");
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
+        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
+        if (visibleEntries.length === 0) {
+          return;
+        }
+
+        const topMostEntry = visibleEntries.reduce((closest, current) => {
+          return Math.abs(current.boundingClientRect.top) <
+            Math.abs(closest.boundingClientRect.top)
+            ? current
+            : closest;
         });
+
+        setActiveSection(topMostEntry.target.id);
       },
       {
         rootMargin: "-20% 0px -60% 0px",
@@ -343,7 +351,7 @@ export default function GuidePage() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [searchQuery]);
 
   const scrollToSection = (sectionId: string) => {
     const element = sectionRefs.current[sectionId] || document.getElementById(sectionId);
@@ -407,11 +415,12 @@ export default function GuidePage() {
 
               <nav className="space-y-1">
                 {tableOfContents.map((item) => {
-                  const section = guideSections[item.id];
+                  const section = guideSections[item.key];
+                  if (!section) return null;
                   const Icon = section.icon;
                   return (
                     <button
-                      key={item.id}
+                      key={item.key}
                       onClick={() => scrollToSection(item.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded transition-colors ${
                         activeSection === item.id

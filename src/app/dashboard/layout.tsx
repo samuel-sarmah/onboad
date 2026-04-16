@@ -54,6 +54,11 @@ export default async function DashboardLayout({
       <Sidebar 
         workspaces={workspaces} 
         currentWorkspace={currentWorkspace} 
+        user={{
+          id: user.id,
+          name: user.user_metadata?.name ?? null,
+          email: user.email ?? null,
+        }}
       />
       <main className="flex-1 overflow-auto bg-white">
         {children}
