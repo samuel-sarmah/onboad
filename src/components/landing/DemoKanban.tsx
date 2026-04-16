@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { toast } from "sonner";
 import { KanbanColumn } from "@/components/kanban";
 import { Button, Input, Textarea, Badge } from "@/components/ui";
 import { useLandingDemo, DemoTask } from "./LandingDemoContext";
@@ -111,6 +112,7 @@ export function DemoKanban() {
       [newTaskColumn]: updatedTasks.map((t, i) => ({ ...t, position: i + 1 })),
     });
 
+    toast.success("Task created");
     setNewTaskForm({ title: "", description: "", priority: "medium", due_date: "" });
     setShowNewTaskForm(false);
   };
@@ -165,6 +167,7 @@ export function DemoKanban() {
       });
     }
 
+    toast.success("Task updated");
     setSelectedTask(null);
     setIsEditing(false);
   };
@@ -173,6 +176,7 @@ export function DemoKanban() {
     if (!selectedTask) return;
 
     deleteTask(selectedTask.id);
+    toast.info("Task deleted");
 
     setSelectedTask(null);
   };
