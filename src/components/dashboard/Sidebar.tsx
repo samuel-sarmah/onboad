@@ -14,7 +14,8 @@ import {
   Users,
   ChevronDown,
   LogOut,
-  Bell
+  Bell,
+  HelpCircle
 } from "lucide-react";
 
 interface SidebarProps {
@@ -33,6 +34,7 @@ export function Sidebar({ workspaces, currentWorkspace }: SidebarProps) {
     { name: "Team", href: `/dashboard/${currentWorkspace?.id}/team`, icon: Users },
     { name: "Reports", href: `/dashboard/${currentWorkspace?.id}/reports`, icon: BarChart3 },
     { name: "Settings", href: `/dashboard/${currentWorkspace?.id}/settings`, icon: Settings },
+    { name: "Help", href: "/guide", icon: HelpCircle },
   ];
 
   const handleSignOut = async () => {

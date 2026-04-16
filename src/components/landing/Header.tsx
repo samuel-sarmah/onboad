@@ -26,6 +26,9 @@ export function Header() {
             <Link href="/#pricing" className="px-3 py-1.5 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors">
               Pricing
             </Link>
+            <Link href="/guide" className="px-3 py-1.5 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors">
+              Help Center
+            </Link>
             <Link href="/#about" className="px-3 py-1.5 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors">
               Home
             </Link>
@@ -69,6 +72,13 @@ export function Header() {
               onClick={() => setMobileMenuOpen(false)}
             >
               Pricing
+            </Link>
+            <Link 
+              href="/guide" 
+              className="px-4 py-2 text-sm text-[#5e6c84] hover:text-[#172b4d] hover:bg-[#091e420a] rounded transition-colors text-right"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Help Center
             </Link>
             <Link 
               href="/#about" 
