@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Patrick_Hand, Caveat } from "next/font/google";
+import { NotificationContextProvider } from "@/components/notifications/NotificationContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -34,7 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${patrickHand.variable} ${caveat.variable}`}>
-        {children}
+        <NotificationContextProvider>
+          {children}
+        </NotificationContextProvider>
       </body>
     </html>
   );
