@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button, Input } from "@/components/ui";
 import { Send } from "lucide-react";
+import { toast } from "sonner";
 
 interface Comment {
   id: string;
@@ -46,6 +47,9 @@ export function CommentList({ taskId, initialComments, currentUserId }: CommentL
     if (!error && comment) {
       setComments([...comments, { ...comment, users: { name: "You", avatar_url: null } }]);
       setNewComment("");
+      toast.success("Comment added");
+    } else if (error) {
+      toast.error("Failed to add comment");
     }
 
     setIsSubmitting(false);
