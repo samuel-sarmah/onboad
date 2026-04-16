@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { toast } from "sonner";
 import { KanbanColumn } from "./KanbanColumn";
 import { createClient } from "@/lib/supabase/client";
 import { Button, Input, Textarea, Badge } from "@/components/ui";
@@ -106,6 +107,8 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId, workspace
           position: destination.index 
         })
         .eq("id", draggableId);
+
+      toast.info(`Task moved`);
     }
   };
 
@@ -129,6 +132,9 @@ export function KanbanBoard({ initialColumns, initialTasks, projectId, workspace
         ...tasks,
         [newTaskColumn]: [...(tasks[newTaskColumn] || []), newTask],
       });
+      toast.success("Task created");
+    } else if (error) {
+      toast.error("Failed to create task");
     }
 
     setNewTaskTitle("");
