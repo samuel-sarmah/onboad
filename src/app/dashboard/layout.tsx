@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import { ChatProvider, ChatWidget } from "@/components/chat";
 
 export default async function DashboardLayout({
   children,
@@ -50,19 +51,22 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen">
-      <Sidebar 
-        workspaces={workspaces} 
-        currentWorkspace={currentWorkspace} 
-        user={{
-          id: user.id,
-          name: user.user_metadata?.name ?? null,
-          email: user.email ?? null,
-        }}
-      />
-      <main className="flex-1 overflow-auto bg-white">
-        {children}
-      </main>
-    </div>
+    <ChatProvider workspaceId={currentWorkspace?.id || ""}>
+      <div className="flex h-screen">
+        <Sidebar 
+          workspaces={workspaces} 
+          currentWorkspace={currentWorkspace} 
+          user={{
+            id: user.id,
+            name: user.user_metadata?.name ?? null,
+            email: user.email ?? null,
+          }}
+        />
+        <main className="flex-1 overflow-auto bg-white">
+          {children}
+        </main>
+        <ChatWidget />
+      </div>
+    </ChatProvider>
   );
 }
