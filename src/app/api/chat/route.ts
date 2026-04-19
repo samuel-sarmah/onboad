@@ -146,9 +146,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     let contextPrompt = "";
     if (workspaceId) {
-      const supabase = await createClient();
+      const { data: membership, error: membershipError } = await supabase
+        .from("workspace_members")
+        .select("workspace_id")
+        .eq("workspace_id", workspaceId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (membershipError) {
+        return NextResponse.json(
+          { error: "Failed to validate workspace membership" },
+          { status: 500 }
+        );
+      }
+
+      if (!membership) {
+        return NextResponse.json(
+          { error: "Forbidden" },
+          { status: 403 }
+        );
+      }
+
       const workspaceContext = await getWorkspaceContext(supabase, workspaceId);
 
       if (workspaceContext) {
