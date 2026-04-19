@@ -23,18 +23,6 @@ export default async function DashboardLayout({
   let workspaces: { id: string; name: string }[] = [];
   let currentWorkspace: { id: string; name: string } | undefined;
 
-  if (workspaceId) {
-    const { data: ws } = await supabase
-      .from("workspaces")
-      .select("id, name")
-      .eq("id", workspaceId)
-      .single();
-    
-    if (ws) {
-      currentWorkspace = ws;
-    }
-  }
-
   const { data: memberWorkspaces } = await supabase
     .from("workspace_members")
     .select("workspace_id, workspaces(id, name)")
@@ -44,6 +32,14 @@ export default async function DashboardLayout({
     workspaces = memberWorkspaces
       .map((m) => (m.workspaces as unknown as { id: string; name: string }))
       .filter(Boolean);
+  }
+
+  if (workspaceId) {
+    currentWorkspace = workspaces.find((ws) => ws.id === workspaceId);
+
+    if (!currentWorkspace) {
+      redirect("/dashboard");
+    }
   }
 
   if (!currentWorkspace && workspaces.length > 0) {
