@@ -1,6 +1,8 @@
 /** @jest-environment node */
 
 const getGenerativeModelMock = jest.fn();
+const getUserMock = jest.fn();
+const fromMock = jest.fn();
 
 jest.mock("@google/generative-ai", () => ({
   GoogleGenerativeAI: jest.fn().mockImplementation(() => ({
@@ -31,6 +33,28 @@ describe("POST /api/chat", () => {
     jest.clearAllMocks();
     process.env.GEMINI_API_KEY = "test-api-key";
     delete process.env.GEMINI_MODEL;
+
+    createClientMock.mockResolvedValue({
+      auth: {
+        getUser: getUserMock,
+      },
+      from: fromMock,
+    });
+
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "user-1" } },
+      error: null,
+    });
+
+    fromMock.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
+            maybeSingle: jest.fn().mockResolvedValue({ data: { workspace_id: "ws-1" }, error: null }),
+          }),
+        }),
+      }),
+    });
   });
 
   afterAll(() => {
@@ -82,7 +106,33 @@ describe("POST /api/chat", () => {
     expect(getGenerativeModelMock).toHaveBeenNthCalledWith(2, {
       model: "gemini-1.5-flash-latest",
     });
-    expect(createClientMock).not.toHaveBeenCalled();
+    expect(createClientMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns 401 when user is not authenticated", async () => {
+    getUserMock.mockResolvedValue({ data: { user: null }, error: null });
+
+    const response = await POST(mockRequest({ message: "Hello" }) as never);
+    const data = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(data.error).toBe("Unauthorized");
+  });
+
+  it("returns 403 when workspace is not accessible to the user", async () => {
+    const maybeSingle = jest.fn().mockResolvedValue({ data: null, error: null });
+    const secondEq = jest.fn().mockReturnValue({ maybeSingle });
+    const firstEq = jest.fn().mockReturnValue({ eq: secondEq });
+    const select = jest.fn().mockReturnValue({ eq: firstEq });
+    fromMock.mockReturnValue({ select });
+
+    const response = await POST(
+      mockRequest({ message: "Hello", workspaceId: "ws-denied" }) as never
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(data.error).toBe("Forbidden");
   });
 
   it("returns 500 with helpful error if all configured models fail", async () => {
